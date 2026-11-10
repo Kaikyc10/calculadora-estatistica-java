@@ -11,14 +11,20 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import java.awt.Font;
+import java.util.Arrays;
 
 public class TelaCalculadora extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	
-	// Transformados em atributos da classe para podermos ler os valores no botão
-	private JTextField txtQuantidade;
 	private JTextArea txtAreaNumeros;
+	private JLabel lblResultado;
+	private JComboBox<String> comboBoxOperacao;
+	
+	private Estatistica estatistica = new Estatistica();
+	
+	private double[] numerosRegistrados = null;
 
 	/**
 	 * Launch the application.
@@ -42,57 +48,154 @@ public class TelaCalculadora extends JFrame {
 	public TelaCalculadora() {
 		setTitle("Calculadora Estatística");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 470, 320);
 		getContentPane().setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("CALCULADORA ESTATÍSTICA");
-		lblNewLabel.setBounds(133, 11, 181, 29);
-		getContentPane().add(lblNewLabel);
+		JLabel lblTitulo = new JLabel("CALCULADORA ESTATÍSTICA");
+		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lblTitulo.setBounds(133, 11, 181, 29);
+		getContentPane().add(lblTitulo);
 		
-		JLabel lblNewLabel_1 = new JLabel("Quantos números deseja analisar?");
-		lblNewLabel_1.setBounds(10, 35, 210, 38);
-		getContentPane().add(lblNewLabel_1);
-		
-		txtQuantidade = new JTextField();
-		txtQuantidade.setBounds(211, 44, 86, 20);
-		getContentPane().add(txtQuantidade);
-		txtQuantidade.setColumns(10);
-		
-		JLabel lblNewLabel_2 = new JLabel("Digite os números (separados por vírgula e espaço):");
-		lblNewLabel_2.setBounds(10, 100, 260, 14);
-		getContentPane().add(lblNewLabel_2);
+		JLabel lblDigitar = new JLabel("Digite os números (separados por vírgula ou espaço):");
+		lblDigitar.setBounds(10, 45, 355, 14);
+		getContentPane().add(lblDigitar);
 		
 		txtAreaNumeros = new JTextArea();
-		txtAreaNumeros.setBounds(10, 125, 380, 64);
+		txtAreaNumeros.setBounds(10, 70, 414, 64);
 		getContentPane().add(txtAreaNumeros);
 		
-		JButton btnAvancar = new JButton("Avançar");
-		btnAvancar.addActionListener(new ActionListener() {
+		JLabel lblOperacao = new JLabel("Escolha a operação abaixo:");
+		lblOperacao.setBounds(10, 145, 160, 14);
+		getContentPane().add(lblOperacao);
+		
+		String[] opcoes = {"Média", "Moda", "Mediana", "Q1", "Q3", "Variância", "Desvio-Padrão"};
+		comboBoxOperacao = new JComboBox<>(opcoes);
+		comboBoxOperacao.setBounds(10, 161, 160, 22);
+		getContentPane().add(comboBoxOperacao);
+		
+		lblResultado = new JLabel("Resultado: ");
+		lblResultado.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblResultado.setBounds(10, 205, 414, 30);
+		getContentPane().add(lblResultado);
+		
+		JButton btnHelp = new JButton("?");
+		btnHelp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Lógica executada ao clicar no botão
+				JOptionPane.showMessageDialog(null, 
+					"Instruções:\n1. Digite os números separados por vírgula ou espaço."
+					+ "\n(Exemplo: 1, 2, 3.3, 4, 5)\n2. Clique em 'Registrar' para validar os dados."
+					+ "\n3. Escolha a operação e clique em 'Calcular'.", 
+					"Ajuda", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
+		btnHelp.setBounds(10, 246, 54, 23);
+		getContentPane().add(btnHelp);
+		
+		// Botão REGISTRAR: Valida o texto, conta os elementos e mostra o resumo
+		JButton btnRegistrar = new JButton("Registrar");
+		btnRegistrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				try {
-					String qtdTexto = txtQuantidade.getText().trim();
 					String numerosTexto = txtAreaNumeros.getText().trim();
 					
-					// Validação básica para ver se não está vazio
-					if (qtdTexto.isEmpty() || numerosTexto.isEmpty()) {
-						JOptionPane.showMessageDialog(null, "Preencha todos os campos!", "Aviso", JOptionPane.WARNING_MESSAGE);
+					if (numerosTexto.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "O espaço de números está vazio!", "Aviso", JOptionPane.WARNING_MESSAGE);
 						return;
 					}
 					
-					int quantidade = Integer.parseInt(qtdTexto);
+					// Separa os elementos por vírgula ou espaços
+					String[] partes = numerosTexto.split("[,\\s]+");
+					double[] tempNumeros = new double[partes.length];
 					
-					// Teste temporário para verificar se capturou corretamente
-					JOptionPane.showMessageDialog(null, "Quantidade: " + quantidade + "\nNúmeros digitados:\n" + numerosTexto);
+					for (int i = 0; i < partes.length; i++) {
+						tempNumeros[i] = Double.parseDouble(partes[i]);
+					}
 					
-					// Aqui depois você chamará a próxima tela passando esses dados!
+					// Salva na variável global da classe
+					numerosRegistrados = tempNumeros;
+					
+					// Monta a mensagem com a quantidade e os valores
+					StringBuilder resumo = new StringBuilder();
+					resumo.append("Quantidade de dados digitados: ").append(numerosRegistrados.length).append("\n\nValores:\n");
+					for (int i = 0; i < numerosRegistrados.length; i++) {
+						resumo.append("[").append(i + 1).append("] ").append(numerosRegistrados[i]).append("\n");
+					}
+					resumo.append("\nSe houver algo errado, volte ao espaço, corrija e clique em 'Registrar' novamente.");
+					
+					JOptionPane.showMessageDialog(null, resumo.toString(), "Dados Registrados com Sucesso", JOptionPane.INFORMATION_MESSAGE);
 					
 				} catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(null, "A quantidade deve ser um número inteiro válido!", "Erro", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, 
+						"Erro de formatação! Certifique-se de digitar apenas números válidos (use ponto para decimais).\nRecomendação: apague, corrija o erro e digite novamente.", 
+						"Erro de Entrada", JOptionPane.ERROR_MESSAGE);
+					numerosRegistrados = null; // Reseta caso dê erro
 				}
 			}
 		});
-		btnAvancar.setBounds(335, 227, 89, 23);
-		getContentPane().add(btnAvancar);
+		btnRegistrar.setBounds(335, 161, 89, 23);
+		getContentPane().add(btnRegistrar);
+		
+		// Botão CALCULAR: Executa a operação escolhida usando os dados já registrados
+		JButton btnCalcular = new JButton("Calcular");
+		btnCalcular.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (numerosRegistrados == null || numerosRegistrados.length == 0) {
+					JOptionPane.showMessageDialog(null, "Por favor, clique primeiro no botão 'Registrar' os números!", "Aviso", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
+				String operacaoEscolhida = (String) comboBoxOperacao.getSelectedItem();
+				double resultado = 0;
+				double soma = 0;
+				
+				for (double num : numerosRegistrados) {
+					soma += num;
+				}
+				
+				switch (operacaoEscolhida) {
+					case "Média":
+						resultado = estatistica.media(numerosRegistrados);
+						lblResultado.setText(String.format("Resultado (Média): %.2f", resultado));
+						break;
+						
+					case "Mediana":
+						resultado = estatistica.mediana(numerosRegistrados);
+						lblResultado.setText(String.format("Resultado (Mediana): %.2f", resultado));
+						break;
+					
+					case "Moda":
+						resultado = estatistica.moda(numerosRegistrados);
+						lblResultado.setText(String.format("Resultado (Moda): %.2f", resultado));
+						break;
+						
+					case "Q1":
+						resultado = estatistica.q1(numerosRegistrados);
+						lblResultado.setText(String.format("Resultado (Q1): %.2f", resultado));
+						break;
+					
+					case "Q3":
+						resultado = estatistica.q3(numerosRegistrados);
+						lblResultado.setText(String.format("Resultado (Q3): %.2f", resultado));
+						break;
+					
+					case "Variância":
+						resultado = estatistica.variancia(numerosRegistrados);
+						lblResultado.setText(String.format("Resultado (Variância): %.2f", resultado));
+						break;
+
+					
+					case "Desvio-Padrão":
+						resultado = estatistica.desvioPadrao(estatistica.variancia(numerosRegistrados));
+						lblResultado.setText(String.format("Resultado (Desvio-Padrão): %.2f", resultado));
+						break;
+
+					default:
+						lblResultado.setText("Operação '" + operacaoEscolhida + "' em desenvolvimento.");
+						break;
+				}
+			}
+		});
+		btnCalcular.setBounds(335, 246, 89, 23);
+		getContentPane().add(btnCalcular);
 	}
 }
