@@ -97,7 +97,14 @@ public class TelaCalculadora extends JFrame {
 				JOptionPane.showMessageDialog(null, 
 					"Instruções:\n1. Digite os números separados por vírgula ou espaço."
 					+ "\n(Exemplo: 1, 2, 3.3, 4, 5)\n2. Clique em 'Registrar' para validar os dados."
-					+ "\n3. Escolha a operação e clique em 'Calcular'.", 
+					+ "\n3. Escolha a operação e clique em 'Calcular'."
+					+ "\n4. Após todas as etapas acima, é possível gerar um gráfico de histograma ao clicar no botão 'Gráfico'."
+					+ "\n5. Para registrar novos dados, clique no botão 'Limpar' (ou remova manualmente), digite os novos dados"
+					+ "\ne clique novamente no botão 'Registrar' para validar os novos valores."
+					+ "\n\nEste projeto foi realizado por:"
+					+ "\nÁlvaro Eugenio - 202610002"
+					+"\nKaiky Tereza - 202610079",
+					
 					"Ajuda", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
