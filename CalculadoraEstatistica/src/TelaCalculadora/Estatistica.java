@@ -1,152 +1,159 @@
 package TelaCalculadora;
 import java.util.Arrays;
 
-
 public class Estatistica {
-	
-	 double soma = 0;
 
-
-    public double media(double[] numero){
-        for(int i = 0; i<numero.length; i++){
-            soma = soma + numero[i];
+    public double media(double[] numero) {
+        if (numero == null || numero.length == 0) return 0;
+        double somaLocal = 0;
+        for (int i = 0; i < numero.length; i++) {
+            somaLocal += numero[i];
         }
-        double media = soma/numero.length;
-        return media;
+        return somaLocal / numero.length;
     }
     
-
-    public double moda(double[]numero){
-        if(numero.length == 0 || numero == null){
+    public double moda(double[] numero) {
+        if (numero == null || numero.length == 0) {
             return 0;
         }
 
-        Arrays.sort(numero);
+        // Cria cópia para não alterar a ordem original dos dados
+        double[] copia = numero.clone();
+        Arrays.sort(copia);
 
-        double moda = numero[0];
+        double moda = copia[0];
         int frequenciaMax = 1;
 
-        double numeroAtual = numero[0];
+        double numeroAtual = copia[0];
         int frequenciaAtual = 1;
 
-        for(int i = 1; i<numero.length; i++){
-            if(numero[i] == numeroAtual){
+        for (int i = 1; i < copia.length; i++) {
+            if (copia[i] == numeroAtual) {
                 frequenciaAtual++;
-            }else{
-                numeroAtual = numero[i];
+            } else {
+                numeroAtual = copia[i];
                 frequenciaAtual = 1;
             }
 
-            if(frequenciaAtual > frequenciaMax){
+            if (frequenciaAtual > frequenciaMax) {
                 frequenciaMax = frequenciaAtual;
                 moda = numeroAtual;
             }
         }
 
-        if (frequenciaMax <=1){
-            return 00;
+        if (frequenciaMax <= 1) {
+            return 0; // Ou tratamento para amostragem amodal
         }
         return moda;
     }
     
+    public double mediana(double[] numero) {
+        if (numero == null || numero.length == 0) return 0;
+        
+        double[] copia = numero.clone();
+        Arrays.sort(copia);
 
-    public double mediana(double[] numero){
-        Arrays.sort(numero);
+        int meio = copia.length / 2;
 
-        int meio = numero.length/2;
-
-        if (numero.length % 2 == 0){
-
-            return (numero[meio-1] + numero[meio])/2;
-
-        }else{
-            return numero[((numero.length+1)/2)-1];
+        if (copia.length % 2 == 0) {
+            return (copia[meio - 1] + copia[meio]) / 2.0;
+        } else {
+            return copia[meio];
         }
     }
     
+    public double q1(double[] numero) {
+        if (numero == null || numero.length == 0) return 0;
+        
+        double[] copia = numero.clone();
+        Arrays.sort(copia);
 
-    public double q1 (double[]numero){
-        Arrays.sort(numero);
-
-        double pos = (numero.length + 1)/4.0;
-
+        double pos = (copia.length + 1) / 4.0;
         int inteiro = (int) pos;
         double decimal = pos - inteiro;
 
-        if(decimal == 0){
-            return numero[inteiro-1];
-        }else{
-            double valorInferior = numero[inteiro - 1];
-            double valorSuperior = numero[inteiro];
+        if (inteiro <= 0) {
+            return copia[0];
+        }
+        if (inteiro >= copia.length) {
+            return copia[copia.length - 1];
+        }
 
+        if (decimal == 0) {
+            return copia[inteiro - 1];
+        } else {
+            double valorInferior = copia[inteiro - 1];
+            double valorSuperior = copia[inteiro];
             return valorInferior + decimal * (valorSuperior - valorInferior);
         }
     }
     
+    public double q3(double[] numero) {
+        if (numero == null || numero.length == 0) return 0;
+        
+        double[] copia = numero.clone();
+        Arrays.sort(copia);
 
-    public double q3(double[]numero){
-        Arrays.sort(numero);
-
-        double pos = 3* (numero.length + 1)/4.0;
-
+        double pos = 3 * (copia.length + 1) / 4.0;
         int inteiro = (int) pos;
         double decimal = pos - inteiro;
 
-        if(decimal == 0){
-            return numero[inteiro-1];
-        }else{
-            double valorInferior = numero[inteiro - 1];
-            double valorSuperior = numero[inteiro];
+        if (inteiro <= 0) {
+            return copia[0];
+        }
+        if (inteiro >= copia.length) {
+            return copia[copia.length - 1];
+        }
 
+        if (decimal == 0) {
+            return copia[inteiro - 1];
+        } else {
+            double valorInferior = copia[inteiro - 1];
+            double valorSuperior = copia[inteiro];
             return valorInferior + decimal * (valorSuperior - valorInferior);
         }
     }
     
+    public double percentil(int percentilValor, double[] numero) {
+        if (numero == null || numero.length == 0) return 0;
+        
+        double[] copia = numero.clone();
+        Arrays.sort(copia);
 
-    public double percentil(int percentil, double[]numero){
-        Arrays.sort(numero);
-
-        double p = (percentil * (numero.length +1))/100;
-
-        if(percentil <1){
-            return numero[0];
+        if (percentilValor <= 0) {
+            return copia[0];
+        }
+        if (percentilValor >= 100) {
+            return copia[copia.length - 1];
         }
 
-        if(percentil >= numero.length){
-            return numero[numero.length -1];
-        }
+        double p = (percentilValor * (copia.length + 1)) / 100.0;
+        int indice = (int) p - 1;
+        
+        if (indice < 0) return copia[0];
+        if (indice >= copia.length) return copia[copia.length - 1];
 
-        return numero[(int)p -1];
+        return copia[indice];
     }
     
-
-    public double variancia(double[] numero){
-        for(int i = 0; i<numero.length; i++){
-            soma = soma + numero[i];
-        }
-        double media = soma/numero.length;
-
+    public double variancia(double[] numero) {
+        if (numero == null || numero.length == 0) return 0;
+        
+        double mediaLocal = media(numero);
         double somatorio = 0;
 
-        for (int j = 0; j<numero.length; j++){
-            somatorio = somatorio + Math.pow((numero[j]-media),2);
+        for (int j = 0; j < numero.length; j++) {
+            somatorio += Math.pow((numero[j] - mediaLocal), 2);
         }
-        double variancia = somatorio/numero.length;
-
-        return variancia;
+        return somatorio / numero.length;
     }
     
-
-    public double desvioPadrao(double variancia){
+    public double desvioPadrao(double variancia) {
         return Math.sqrt(variancia);
     }
     
-
-    public double coeficienteV(double desvio, double media){
-        double coeficienteV = (desvio/media)*100;
-
-        return coeficienteV;
-
+    public double coeficienteV(double desvio, double media) {
+        if (media == 0) return 0;
+        return (desvio / media) * 100;
     }
-
 }

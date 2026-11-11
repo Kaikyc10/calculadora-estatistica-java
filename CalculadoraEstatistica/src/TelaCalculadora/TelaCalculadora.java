@@ -35,6 +35,7 @@ public class TelaCalculadora extends JFrame {
 				try {
 					TelaCalculadora frame = new TelaCalculadora();
 					frame.setVisible(true);
+                    frame.setResizable(false); 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -68,7 +69,7 @@ public class TelaCalculadora extends JFrame {
 		lblOperacao.setBounds(10, 145, 160, 14);
 		getContentPane().add(lblOperacao);
 		
-		String[] opcoes = {"Média", "Moda", "Mediana", "Q1", "Q3", "Variância", "Desvio-Padrão"};
+		String[] opcoes = {"Média", "Moda", "Mediana", "Q1", "Q3", "Variância", "Coeficiente de Variação", "Desvio-Padrão"};
 		comboBoxOperacao = new JComboBox<>(opcoes);
 		comboBoxOperacao.setBounds(10, 161, 160, 22);
 		getContentPane().add(comboBoxOperacao);
@@ -77,6 +78,18 @@ public class TelaCalculadora extends JFrame {
 		lblResultado.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblResultado.setBounds(10, 205, 414, 30);
 		getContentPane().add(lblResultado);
+
+        JButton btnLimpar = new JButton("Limpar");
+        btnLimpar.addActionListener(
+            e -> {
+                txtAreaNumeros.setText("");
+                comboBoxOperacao.setSelectedIndex(0);
+                lblResultado.setText("Resultado --");
+                numerosRegistrados = null;
+            }
+        );
+        btnLimpar.setBounds(113, 246, 89, 23);
+		getContentPane().add(btnLimpar);
 		
 		JButton btnHelp = new JButton("?");
 		btnHelp.addActionListener(new ActionListener() {
@@ -146,11 +159,7 @@ public class TelaCalculadora extends JFrame {
 				
 				String operacaoEscolhida = (String) comboBoxOperacao.getSelectedItem();
 				double resultado = 0;
-				double soma = 0;
 				
-				for (double num : numerosRegistrados) {
-					soma += num;
-				}
 				
 				switch (operacaoEscolhida) {
 					case "Média":
@@ -182,6 +191,11 @@ public class TelaCalculadora extends JFrame {
 						resultado = estatistica.variancia(numerosRegistrados);
 						lblResultado.setText(String.format("Resultado (Variância): %.2f", resultado));
 						break;
+					
+					case "Coeficiente de Variação":
+						resultado = estatistica.coeficienteV(estatistica.desvioPadrao(estatistica.variancia(numerosRegistrados)), estatistica.media(numerosRegistrados));
+						lblResultado.setText(String.format("Resultado (Coeficiente de Variação): %.2f", resultado));
+						break;
 
 					
 					case "Desvio-Padrão":
@@ -197,5 +211,29 @@ public class TelaCalculadora extends JFrame {
 		});
 		btnCalcular.setBounds(335, 246, 89, 23);
 		getContentPane().add(btnCalcular);
+		
+		JButton btnGrafico = new JButton("Gráfico");
+		btnGrafico.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        if (numerosRegistrados == null || numerosRegistrados.length == 0) {
+		            JOptionPane.showMessageDialog(null, "Por favor, clique primeiro no botão 'Registrar' os números!", "Aviso", JOptionPane.WARNING_MESSAGE);
+		            return;
+		        }
+		        
+		        // Criando a janela do gráfico
+		        JFrame janelaGrafico = new JFrame("Histograma dos Dados");
+		        janelaGrafico.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Fecha apenas a janela do gráfico, não o programa todo
+		        
+		        // Instancia a classe que você criou no outro arquivo
+		        PainelHistograma painel = new PainelHistograma(numerosRegistrados);
+		        
+		        janelaGrafico.add(painel);
+		        janelaGrafico.pack();
+		        janelaGrafico.setLocationRelativeTo(null); // Centraliza na tela
+		        janelaGrafico.setVisible(true);
+		    }
+		});
+		btnGrafico.setBounds(225, 246, 89, 23);
+		getContentPane().add(btnGrafico);
 	}
 }
