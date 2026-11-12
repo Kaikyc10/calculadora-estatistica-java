@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -65,8 +66,15 @@ public class TelaCalculadora extends JFrame {
 		getContentPane().add(lblDigitar);
 		
 		txtAreaNumeros = new JTextArea();
+		JScrollPane scrollPane = new JScrollPane(txtAreaNumeros);
+		scrollPane.setBounds(10, 70, 414, 64);
+		getContentPane().add(scrollPane);
+		
+		/*
+		txtAreaNumeros = new JTextArea();
 		txtAreaNumeros.setBounds(10, 70, 414, 64);
 		getContentPane().add(txtAreaNumeros);
+		*/
 		
 		JLabel lblOperacao = new JLabel("Escolha a operação abaixo:");
 		lblOperacao.setBounds(10, 145, 160, 14);
