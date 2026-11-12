@@ -4,12 +4,14 @@ import java.util.Arrays;
 public class Estatistica {
 
     public double media(double[] numero) {
-        if (numero == null || numero.length == 0) return 0;
-        double somaLocal = 0;
-        for (int i = 0; i < numero.length; i++) {
-            somaLocal += numero[i];
+        if (numero == null || numero.length == 0) {
+        	return 0;
         }
-        return somaLocal / numero.length;
+        double soma = 0;
+        for (int i = 0; i < numero.length; i++) {
+            soma += numero[i];
+        }
+        return soma / numero.length;
     }
     
     public double moda(double[] numero) {
@@ -17,7 +19,6 @@ public class Estatistica {
             return 0;
         }
 
-        // Cria cópia para não alterar a ordem original dos dados
         double[] copia = numero.clone();
         Arrays.sort(copia);
 
@@ -42,13 +43,16 @@ public class Estatistica {
         }
 
         if (frequenciaMax <= 1) {
-            return 0; // Ou tratamento para amostragem amodal
+            return 0;
         }
+        
         return moda;
     }
     
     public double mediana(double[] numero) {
-        if (numero == null || numero.length == 0) return 0;
+        if (numero == null || numero.length == 0) {
+        	return 0;
+        }
         
         double[] copia = numero.clone();
         Arrays.sort(copia);
@@ -56,19 +60,21 @@ public class Estatistica {
         int meio = copia.length / 2;
 
         if (copia.length % 2 == 0) {
-            return (copia[meio - 1] + copia[meio]) / 2.0;
+            return (copia[meio - 1] + copia[meio]) / 2;
         } else {
             return copia[meio];
         }
     }
     
     public double q1(double[] numero) {
-        if (numero == null || numero.length == 0) return 0;
+        if (numero == null || numero.length == 0) {
+        	return 0;
+        }
         
         double[] copia = numero.clone();
         Arrays.sort(copia);
 
-        double pos = (copia.length + 1) / 4.0;
+        double pos = (copia.length + 1) / 4;
         int inteiro = (int) pos;
         double decimal = pos - inteiro;
 
@@ -89,12 +95,14 @@ public class Estatistica {
     }
     
     public double q3(double[] numero) {
-        if (numero == null || numero.length == 0) return 0;
+        if (numero == null || numero.length == 0) {
+        	return 0;
+        }
         
         double[] copia = numero.clone();
         Arrays.sort(copia);
 
-        double pos = 3 * (copia.length + 1) / 4.0;
+        double pos = 3 * (copia.length + 1) / 4;
         int inteiro = (int) pos;
         double decimal = pos - inteiro;
 
@@ -114,20 +122,22 @@ public class Estatistica {
         }
     }
     
-    public double percentil(int percentilValor, double[] numero) {
-        if (numero == null || numero.length == 0) return 0;
+    public double percentil(int percentil, double[] numero) {
+        if (numero == null || numero.length == 0) {
+        	return 0;
+        }
         
         double[] copia = numero.clone();
         Arrays.sort(copia);
 
-        if (percentilValor <= 0) {
+        if (percentil <= 0) {
             return copia[0];
         }
-        if (percentilValor >= 100) {
+        if (percentil >= 100) {
             return copia[copia.length - 1];
         }
 
-        double p = (percentilValor * (copia.length + 1)) / 100.0;
+        double p = (percentil * (copia.length + 1)) / 100.0;
         int indice = (int) p - 1;
         
         if (indice < 0) return copia[0];
@@ -137,13 +147,23 @@ public class Estatistica {
     }
     
     public double variancia(double[] numero) {
-        if (numero == null || numero.length == 0) return 0;
+        if (numero == null || numero.length == 0) {
+        	return 0;
+        }
         
-        double mediaLocal = media(numero);
+        double soma = 0;
+        
+        for(int i = 0; i<numero.length; i++){
+            soma = soma + numero[i];
+        }
+
+        
+        double media = soma/numero.length;
+
         double somatorio = 0;
 
         for (int j = 0; j < numero.length; j++) {
-            somatorio += Math.pow((numero[j] - mediaLocal), 2);
+            somatorio += Math.pow((numero[j] - media), 2);
         }
         return somatorio / numero.length;
     }
@@ -153,7 +173,9 @@ public class Estatistica {
     }
     
     public double coeficienteV(double desvio, double media) {
-        if (media == 0) return 0;
+        if (media == 0) {
+        	return 0;
+        }
         return (desvio / media) * 100;
     }
 }

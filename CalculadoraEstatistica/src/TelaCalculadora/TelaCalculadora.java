@@ -1,5 +1,7 @@
 package TelaCalculadora;
 
+
+import java.awt.Color;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -51,6 +53,7 @@ public class TelaCalculadora extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 470, 320);
 		getContentPane().setLayout(null);
+		getContentPane().setBackground(new Color(240, 248, 255));
 		
 		JLabel lblTitulo = new JLabel("CALCULADORA ESTATÍSTICA");
 		lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -77,6 +80,7 @@ public class TelaCalculadora extends JFrame {
 		lblResultado = new JLabel("Resultado: ");
 		lblResultado.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblResultado.setBounds(10, 205, 414, 30);
+		lblResultado.setForeground(new Color(0, 102, 204));
 		getContentPane().add(lblResultado);
 
         JButton btnLimpar = new JButton("Limpar");
@@ -111,7 +115,6 @@ public class TelaCalculadora extends JFrame {
 		btnHelp.setBounds(10, 246, 54, 23);
 		getContentPane().add(btnHelp);
 		
-		// Botão REGISTRAR: Valida o texto, conta os elementos e mostra o resumo
 		JButton btnRegistrar = new JButton("Registrar");
 		btnRegistrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -123,7 +126,6 @@ public class TelaCalculadora extends JFrame {
 						return;
 					}
 					
-					// Separa os elementos por vírgula ou espaços
 					String[] partes = numerosTexto.split("[,\\s]+");
 					double[] tempNumeros = new double[partes.length];
 					
@@ -131,10 +133,8 @@ public class TelaCalculadora extends JFrame {
 						tempNumeros[i] = Double.parseDouble(partes[i]);
 					}
 					
-					// Salva na variável global da classe
 					numerosRegistrados = tempNumeros;
 					
-					// Monta a mensagem com a quantidade e os valores
 					StringBuilder resumo = new StringBuilder();
 					resumo.append("Quantidade de dados digitados: ").append(numerosRegistrados.length).append("\n\nValores:\n");
 					for (int i = 0; i < numerosRegistrados.length; i++) {
@@ -148,15 +148,16 @@ public class TelaCalculadora extends JFrame {
 					JOptionPane.showMessageDialog(null, 
 						"Erro de formatação! Certifique-se de digitar apenas números válidos (use ponto para decimais).\nRecomendação: apague, corrija o erro e digite novamente.", 
 						"Erro de Entrada", JOptionPane.ERROR_MESSAGE);
-					numerosRegistrados = null; // Reseta caso dê erro
+					numerosRegistrados = null;
 				}
 			}
 		});
 		btnRegistrar.setBounds(335, 161, 89, 23);
 		getContentPane().add(btnRegistrar);
 		
-		// Botão CALCULAR: Executa a operação escolhida usando os dados já registrados
 		JButton btnCalcular = new JButton("Calcular");
+		btnCalcular.setBackground(new Color(46, 139, 87)); 
+		btnCalcular.setForeground(Color.WHITE);
 		btnCalcular.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (numerosRegistrados == null || numerosRegistrados.length == 0) {
@@ -226,17 +227,8 @@ public class TelaCalculadora extends JFrame {
 		            JOptionPane.showMessageDialog(null, "Por favor, clique primeiro no botão 'Registrar' os números!", "Aviso", JOptionPane.WARNING_MESSAGE);
 		            return;
 		        }
-		        
-		        // Criando a janela do gráfico
-		        JFrame janelaGrafico = new JFrame("Histograma dos Dados");
-		        janelaGrafico.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Fecha apenas a janela do gráfico, não o programa todo
-		        
-		        // Instancia a classe que você criou no outro arquivo
-		        PainelHistograma painel = new PainelHistograma(numerosRegistrados);
-		        
-		        janelaGrafico.add(painel);
-		        janelaGrafico.pack();
-		        janelaGrafico.setLocationRelativeTo(null); // Centraliza na tela
+
+		        PainelHistograma janelaGrafico = new PainelHistograma(numerosRegistrados);
 		        janelaGrafico.setVisible(true);
 		    }
 		});
